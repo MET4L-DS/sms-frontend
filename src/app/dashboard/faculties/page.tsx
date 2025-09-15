@@ -368,74 +368,72 @@ export default function FacultiesPage() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold">Faculty Members</h1>
-              <p className="text-muted-foreground">
-                Manage faculty members in your department
-              </p>
-            </div>
-            {canCreateEdit && (
-              <Dialog
-                open={isCreateDialogOpen}
-                onOpenChange={(open) => {
-                  setIsCreateDialogOpen(open);
-                  if (!open) resetCreateForm();
-                }}
-              >
-                <DialogTrigger asChild>
-                  <Button>Add Faculty</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <form onSubmit={handleCreate}>
-                    <DialogHeader>
-                      <DialogTitle>Create New Faculty Member</DialogTitle>
-                      <DialogDescription>
-                        Add a new faculty member to your department. Password
-                        will be set to their email address.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="faculty_email" className="text-right">
-                          Email
-                        </Label>
-                        <Input
-                          id="faculty_email"
-                          type="email"
-                          value={createFormData.email}
-                          onChange={(e) =>
-                            setCreateFormData({
-                              ...createFormData,
-                              email: e.target.value,
-                            })
-                          }
-                          placeholder="faculty@university.edu"
-                          className="col-span-3"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button type="submit" disabled={formLoading}>
-                        {formLoading ? "Creating..." : "Create Faculty"}
-                      </Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Users className="mr-2 h-5 w-5" />
-                Department Faculty
-              </CardTitle>
-              <CardDescription>
-                Faculty members in your department
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Users className="mr-2 h-5 w-5" />
+                  <div>
+                    <CardTitle>Department Faculty</CardTitle>
+                    <CardDescription>
+                      Faculty members in your department
+                    </CardDescription>
+                  </div>
+                </div>
+                {canCreateEdit && (
+                  <Dialog
+                    open={isCreateDialogOpen}
+                    onOpenChange={(open) => {
+                      setIsCreateDialogOpen(open);
+                      if (!open) resetCreateForm();
+                    }}
+                  >
+                    <DialogTrigger asChild>
+                      <Button>Add Faculty</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <form onSubmit={handleCreate}>
+                        <DialogHeader>
+                          <DialogTitle>Create New Faculty Member</DialogTitle>
+                          <DialogDescription>
+                            Add a new faculty member to your department.
+                            Password will be set to their email address.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label
+                              htmlFor="faculty_email"
+                              className="text-right"
+                            >
+                              Email
+                            </Label>
+                            <Input
+                              id="faculty_email"
+                              type="email"
+                              value={createFormData.email}
+                              onChange={(e) =>
+                                setCreateFormData({
+                                  ...createFormData,
+                                  email: e.target.value,
+                                })
+                              }
+                              placeholder="faculty@university.edu"
+                              className="col-span-3"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button type="submit" disabled={formLoading}>
+                            {formLoading ? "Creating..." : "Create Faculty"}
+                          </Button>
+                        </DialogFooter>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {loading ? (

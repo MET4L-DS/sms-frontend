@@ -278,144 +278,148 @@ export default function ProgrammesPage() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold">Programmes</h1>
-              <p className="text-muted-foreground">
-                Manage academic programmes in your department
-              </p>
-            </div>
-            {canCreateEdit && (
-              <Dialog
-                open={isCreateDialogOpen}
-                onOpenChange={(open) => {
-                  setIsCreateDialogOpen(open);
-                  if (!open) resetForm();
-                }}
-              >
-                <DialogTrigger asChild>
-                  <Button>Add Programme</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[525px]">
-                  <form onSubmit={handleCreate}>
-                    <DialogHeader>
-                      <DialogTitle>Create New Programme</DialogTitle>
-                      <DialogDescription>
-                        Add a new academic programme to your department.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="programme_name" className="text-right">
-                          Programme Name
-                        </Label>
-                        <Input
-                          id="programme_name"
-                          value={formData.programme_name}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              programme_name: e.target.value,
-                            })
-                          }
-                          placeholder="e.g., BSc Computer Science"
-                          className="col-span-3"
-                          required
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="degree_level_id" className="text-right">
-                          Degree Level
-                        </Label>
-                        <Select
-                          value={formData.degree_level_id}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, degree_level_id: value })
-                          }
-                        >
-                          <SelectTrigger className="col-span-3">
-                            <SelectValue placeholder="Select degree level" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {degrees.map((degree) => (
-                              <SelectItem
-                                key={degree.degree_level_id}
-                                value={degree.degree_level_id.toString()}
-                              >
-                                {degree.level_name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label
-                          htmlFor="minimum_duration"
-                          className="text-right"
-                        >
-                          Min Duration (Years)
-                        </Label>
-                        <Input
-                          id="minimum_duration"
-                          type="number"
-                          min="1"
-                          max="10"
-                          value={formData.minimum_duration_years}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              minimum_duration_years: e.target.value,
-                            })
-                          }
-                          placeholder="4"
-                          className="col-span-3"
-                          required
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label
-                          htmlFor="maximum_duration"
-                          className="text-right"
-                        >
-                          Max Duration (Years)
-                        </Label>
-                        <Input
-                          id="maximum_duration"
-                          type="number"
-                          min="1"
-                          max="15"
-                          value={formData.maximum_duration_years}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              maximum_duration_years: e.target.value,
-                            })
-                          }
-                          placeholder="6"
-                          className="col-span-3"
-                        />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button type="submit" disabled={formLoading}>
-                        {formLoading ? "Creating..." : "Create Programme"}
-                      </Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <BookOpen className="mr-2 h-5 w-5" />
-                Department Programmes
-              </CardTitle>
-              <CardDescription>
-                Academic programmes offered by your department
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <BookOpen className="mr-2 h-5 w-5" />
+                  <div>
+                    <CardTitle>Department Programmes</CardTitle>
+                    <CardDescription>
+                      Academic programmes offered by your department
+                    </CardDescription>
+                  </div>
+                </div>
+                {canCreateEdit && (
+                  <Dialog
+                    open={isCreateDialogOpen}
+                    onOpenChange={(open) => {
+                      setIsCreateDialogOpen(open);
+                      if (!open) resetForm();
+                    }}
+                  >
+                    <DialogTrigger asChild>
+                      <Button>Add Programme</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[525px]">
+                      <form onSubmit={handleCreate}>
+                        <DialogHeader>
+                          <DialogTitle>Create New Programme</DialogTitle>
+                          <DialogDescription>
+                            Add a new academic programme to your department.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label
+                              htmlFor="programme_name"
+                              className="text-right"
+                            >
+                              Programme Name
+                            </Label>
+                            <Input
+                              id="programme_name"
+                              value={formData.programme_name}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  programme_name: e.target.value,
+                                })
+                              }
+                              placeholder="e.g., BSc Computer Science"
+                              className="col-span-3"
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label
+                              htmlFor="degree_level_id"
+                              className="text-right"
+                            >
+                              Degree Level
+                            </Label>
+                            <Select
+                              value={formData.degree_level_id}
+                              onValueChange={(value) =>
+                                setFormData({
+                                  ...formData,
+                                  degree_level_id: value,
+                                })
+                              }
+                            >
+                              <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="Select degree level" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {degrees.map((degree) => (
+                                  <SelectItem
+                                    key={degree.degree_level_id}
+                                    value={degree.degree_level_id.toString()}
+                                  >
+                                    {degree.level_name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label
+                              htmlFor="minimum_duration"
+                              className="text-right"
+                            >
+                              Min Duration (Years)
+                            </Label>
+                            <Input
+                              id="minimum_duration"
+                              type="number"
+                              min="1"
+                              max="10"
+                              value={formData.minimum_duration_years}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  minimum_duration_years: e.target.value,
+                                })
+                              }
+                              placeholder="4"
+                              className="col-span-3"
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label
+                              htmlFor="maximum_duration"
+                              className="text-right"
+                            >
+                              Max Duration (Years)
+                            </Label>
+                            <Input
+                              id="maximum_duration"
+                              type="number"
+                              min="1"
+                              max="15"
+                              value={formData.maximum_duration_years}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  maximum_duration_years: e.target.value,
+                                })
+                              }
+                              placeholder="6"
+                              className="col-span-3"
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button type="submit" disabled={formLoading}>
+                            {formLoading ? "Creating..." : "Create Programme"}
+                          </Button>
+                        </DialogFooter>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {loading ? (

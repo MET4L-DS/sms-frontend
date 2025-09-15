@@ -280,138 +280,148 @@ export default function BatchesPage() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold">Batches</h1>
-              <p className="text-muted-foreground">
-                Manage student batches in your department
-              </p>
-            </div>
-            {canCreateEdit && (
-              <Dialog
-                open={isCreateDialogOpen}
-                onOpenChange={(open) => {
-                  setIsCreateDialogOpen(open);
-                  if (!open) resetForm();
-                }}
-              >
-                <DialogTrigger asChild>
-                  <Button>Add Batch</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[525px]">
-                  <form onSubmit={handleCreate}>
-                    <DialogHeader>
-                      <DialogTitle>Create New Batch</DialogTitle>
-                      <DialogDescription>
-                        Add a new student batch to your department.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="programme_id" className="text-right">
-                          Programme
-                        </Label>
-                        <Select
-                          value={formData.programme_id}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, programme_id: value })
-                          }
-                        >
-                          <SelectTrigger className="col-span-3">
-                            <SelectValue placeholder="Select programme" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {programmes.map((programme) => (
-                              <SelectItem
-                                key={programme.programme_id}
-                                value={programme.programme_id.toString()}
-                              >
-                                {programme.programme_name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="batch_name" className="text-right">
-                          Batch Name
-                        </Label>
-                        <Input
-                          id="batch_name"
-                          value={formData.batch_name}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              batch_name: e.target.value,
-                            })
-                          }
-                          placeholder="e.g., 2024 Autumn Batch"
-                          className="col-span-3"
-                          required
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="start_year" className="text-right">
-                          Start Year
-                        </Label>
-                        <Select
-                          value={formData.start_year}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, start_year: value })
-                          }
-                        >
-                          <SelectTrigger className="col-span-3">
-                            <SelectValue placeholder="Select year" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {years.map((year) => (
-                              <SelectItem key={year} value={year.toString()}>
-                                {year}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="start_semester" className="text-right">
-                          Start Semester
-                        </Label>
-                        <Select
-                          value={formData.start_semester}
-                          onValueChange={(value: "SPRING" | "AUTUMN") =>
-                            setFormData({ ...formData, start_semester: value })
-                          }
-                        >
-                          <SelectTrigger className="col-span-3">
-                            <SelectValue placeholder="Select semester" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="SPRING">Spring</SelectItem>
-                            <SelectItem value="AUTUMN">Autumn</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button type="submit" disabled={formLoading}>
-                        {formLoading ? "Creating..." : "Create Batch"}
-                      </Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Users className="mr-2 h-5 w-5" />
-                Department Batches
-              </CardTitle>
-              <CardDescription>
-                Student batches in your department programmes
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Users className="mr-2 h-5 w-5" />
+                  <div>
+                    <CardTitle>Department Batches</CardTitle>
+                    <CardDescription>
+                      Student batches in your department programmes
+                    </CardDescription>
+                  </div>
+                </div>
+                {canCreateEdit && (
+                  <Dialog
+                    open={isCreateDialogOpen}
+                    onOpenChange={(open) => {
+                      setIsCreateDialogOpen(open);
+                      if (!open) resetForm();
+                    }}
+                  >
+                    <DialogTrigger asChild>
+                      <Button>Add Batch</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[525px]">
+                      <form onSubmit={handleCreate}>
+                        <DialogHeader>
+                          <DialogTitle>Create New Batch</DialogTitle>
+                          <DialogDescription>
+                            Add a new student batch to your department.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label
+                              htmlFor="programme_id"
+                              className="text-right"
+                            >
+                              Programme
+                            </Label>
+                            <Select
+                              value={formData.programme_id}
+                              onValueChange={(value) =>
+                                setFormData({
+                                  ...formData,
+                                  programme_id: value,
+                                })
+                              }
+                            >
+                              <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="Select programme" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {programmes.map((programme) => (
+                                  <SelectItem
+                                    key={programme.programme_id}
+                                    value={programme.programme_id.toString()}
+                                  >
+                                    {programme.programme_name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="batch_name" className="text-right">
+                              Batch Name
+                            </Label>
+                            <Input
+                              id="batch_name"
+                              value={formData.batch_name}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  batch_name: e.target.value,
+                                })
+                              }
+                              placeholder="e.g., 2024 Autumn Batch"
+                              className="col-span-3"
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="start_year" className="text-right">
+                              Start Year
+                            </Label>
+                            <Select
+                              value={formData.start_year}
+                              onValueChange={(value) =>
+                                setFormData({ ...formData, start_year: value })
+                              }
+                            >
+                              <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="Select year" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {years.map((year) => (
+                                  <SelectItem
+                                    key={year}
+                                    value={year.toString()}
+                                  >
+                                    {year}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label
+                              htmlFor="start_semester"
+                              className="text-right"
+                            >
+                              Start Semester
+                            </Label>
+                            <Select
+                              value={formData.start_semester}
+                              onValueChange={(value: "SPRING" | "AUTUMN") =>
+                                setFormData({
+                                  ...formData,
+                                  start_semester: value,
+                                })
+                              }
+                            >
+                              <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="Select semester" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="SPRING">Spring</SelectItem>
+                                <SelectItem value="AUTUMN">Autumn</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button type="submit" disabled={formLoading}>
+                            {formLoading ? "Creating..." : "Create Batch"}
+                          </Button>
+                        </DialogFooter>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {loading ? (
