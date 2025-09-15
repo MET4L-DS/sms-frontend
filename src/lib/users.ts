@@ -44,7 +44,7 @@ export class UserService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -82,7 +82,7 @@ export class UserService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -91,7 +91,7 @@ export class UserService {
    * Delete user
    * Admin can delete any user, HOD can delete department users
    */
-  static async deleteUser(id: number): Promise<any> {
+  static async deleteUser(id: number): Promise<void> {
     try {
       const token = localStorage.getItem("auth_token");
       if (!token) {
@@ -112,7 +112,7 @@ export class UserService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }

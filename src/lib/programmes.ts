@@ -63,7 +63,7 @@ export class ProgrammeService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -105,7 +105,7 @@ export class ProgrammeService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -116,7 +116,7 @@ export class ProgrammeService {
    */
   static async createProgramme(
     programmeData: CreateProgrammeRequest
-  ): Promise<any> {
+  ): Promise<Programme> {
     try {
       const token = localStorage.getItem("auth_token");
       if (!token) {
@@ -150,7 +150,7 @@ export class ProgrammeService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -162,7 +162,7 @@ export class ProgrammeService {
   static async updateProgramme(
     id: number,
     programmeData: UpdateProgrammeRequest
-  ): Promise<any> {
+  ): Promise<Programme> {
     try {
       const token = localStorage.getItem("auth_token");
       if (!token) {
@@ -196,7 +196,7 @@ export class ProgrammeService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
@@ -205,7 +205,7 @@ export class ProgrammeService {
    * Delete programme from your department
    * HOD only
    */
-  static async deleteProgramme(id: number): Promise<any> {
+  static async deleteProgramme(id: number): Promise<void> {
     try {
       const token = localStorage.getItem("auth_token");
       if (!token) {
@@ -238,7 +238,7 @@ export class ProgrammeService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw error;
     }
   }
