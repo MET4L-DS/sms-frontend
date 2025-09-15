@@ -71,9 +71,7 @@ import {
 	StudentProfile,
 	FacultyProfile,
 	Address,
-	Department,
 	Batch,
-	Programme,
 } from "@/lib/profile";
 import { cn } from "@/lib/utils";
 
@@ -240,19 +238,12 @@ export default function AccountPage() {
 
 				// Load supporting data
 				try {
-					const [deptData, batchData, progData] =
-						await Promise.allSettled([
-							ProfileService.getDepartments(token),
-							ProfileService.getBatches(token),
-							ProfileService.getProgrammes(token),
-						]);
+					const [batchData] = await Promise.allSettled([
+						ProfileService.getBatches(token),
+					]);
 
-					if (deptData.status === "fulfilled")
-						setDepartments(deptData.value);
 					if (batchData.status === "fulfilled")
 						setBatches(batchData.value);
-					if (progData.status === "fulfilled")
-						setProgrammes(progData.value);
 				} catch (error) {
 					console.warn("Failed to load supporting data:", error);
 				}
@@ -305,12 +296,6 @@ export default function AccountPage() {
 			} catch {
 				console.error("Failed to load profile");
 				toast.error("Failed to load profile data");
-
-				// If token is invalid, redirect to login
-				if (error instanceof Error && error.message.includes("token")) {
-					AuthService.removeToken();
-					router.push("/login");
-				}
 			} finally {
 				setLoading(false);
 			}
@@ -469,9 +454,7 @@ export default function AccountPage() {
 
 			// Reload faculty profile data
 			try {
-				const updatedFacultyProfile =
-					await ProfileService.getFacultyProfile(token);
-				setFacultyProfile(updatedFacultyProfile);
+				await ProfileService.getFacultyProfile(token);
 			} catch {
 				// Profile might have been created for the first time
 			}
