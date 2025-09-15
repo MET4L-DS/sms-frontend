@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Trash2, Users as UsersIcon, Filter } from "lucide-react";
 import { toast } from "sonner";
 
@@ -104,13 +104,15 @@ export function UserList() {
 	};
 
 	// Filter users to exclude students for admin section
-	const adminUsers = users.filter(
-		(user) =>
-			user.user_type === "ADMIN" ||
-			user.user_type === "HOD" ||
-			user.user_type === "STAFF" ||
-			user.user_type === "FACULTY"
-	);
+	const adminUsers = useMemo(() => {
+		return users.filter(
+			(user) =>
+				user.user_type === "ADMIN" ||
+				user.user_type === "HOD" ||
+				user.user_type === "STAFF" ||
+				user.user_type === "FACULTY"
+		);
+	}, [users]);
 
 	const filterUsers = useCallback(() => {
 		let filtered = adminUsers;
