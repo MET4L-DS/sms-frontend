@@ -1,9 +1,9 @@
 {
-  "servers": {
-    "shadcn": {
-      "command": "npx",
-      "args": ["shadcn@latest", "mcp"]
-    }
-  },
-  "inputs": []
+	"servers": {
+		"shadcn": {
+			"command": "npx",
+			"args": ["shadcn@latest", "mcp"]
+		}
+	},
+	"inputs": []
 }
