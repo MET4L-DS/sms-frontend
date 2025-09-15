@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import {
@@ -15,12 +15,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { DashboardContent } from "@/components/dashboard";
+import { UserList } from "@/components/users";
 import { AuthGuard } from "@/components/auth";
 
-export default function Page() {
+export default function UsersPage() {
   return (
-    <AuthGuard>
+    <AuthGuard allowedRoles={["ADMIN"]}>
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
@@ -34,18 +34,20 @@ export default function Page() {
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">SMS Dashboard</BreadcrumbLink>
+                    <BreadcrumbLink href="/dashboard">
+                      SMS Dashboard
+                    </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator className="hidden md:block" />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>Overview</BreadcrumbPage>
+                    <BreadcrumbPage>Users</BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <DashboardContent />
+            <UserList />
           </div>
         </SidebarInset>
       </SidebarProvider>

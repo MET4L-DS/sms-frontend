@@ -1,29 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import * as React from "react";
 import {
   BookOpen,
-  Bot,
   Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
   Settings2,
-  SquareTerminal,
   Users,
   Building,
   GraduationCap,
   UserCheck,
 } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavSecondary } from "@/components/nav-secondary";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from "./nav-main";
+import { NavUser } from "./nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -36,7 +26,10 @@ import {
 
 import { AuthService, UserProfile } from "@/lib/auth";
 
-// Function to get dynamic sidebar data based on user profile
+/**
+ * Get dynamic sidebar data based on user profile
+ * Returns navigation items specific to the user's role
+ */
 function getUserData(profile: UserProfile | null) {
   const baseData = {
     user: {
@@ -44,9 +37,16 @@ function getUserData(profile: UserProfile | null) {
       email: profile?.email ?? "guest@example.com",
       avatar: "/avatars/shadcn.jpg",
     },
-    navMain: [] as any[],
-    navSecondary: [] as any[],
-    projects: [] as any[],
+    navMain: [] as Array<{
+      title: string;
+      url: string;
+      icon: any;
+      isActive?: boolean;
+      items: Array<{
+        title: string;
+        url: string;
+      }>;
+    }>,
   };
 
   if (!profile) {
@@ -55,105 +55,67 @@ function getUserData(profile: UserProfile | null) {
 
   // Admin-specific navigation
   if (profile.user_type === "ADMIN") {
-    baseData.navMain.push(
-      {
-        title: "Administration",
-        url: "#",
-        icon: Settings2,
-        isActive: true,
-        items: [
-          {
-            title: "Departments",
-            url: "/departments",
-          },
-          {
-            title: "System Users",
-            url: "#",
-          },
-          {
-            title: "System Settings",
-            url: "#",
-          },
-        ],
-      },
-      {
-        title: "Reports",
-        url: "#",
-        icon: PieChart,
-        items: [
-          {
-            title: "Department Analytics",
-            url: "#",
-          },
-          {
-            title: "User Statistics",
-            url: "#",
-          },
-        ],
-      }
-    );
+    baseData.navMain.push({
+      title: "Administration",
+      url: "#",
+      icon: Settings2,
+      isActive: true,
+      items: [
+        {
+          title: "Departments",
+          url: "/dashboard/departments",
+        },
+        {
+          title: "Degrees",
+          url: "/dashboard/degrees",
+        },
+        {
+          title: "Users",
+          url: "/dashboard/users",
+        },
+      ],
+    });
   }
 
   // HOD-specific navigation
   if (profile.user_type === "HOD") {
-    baseData.navMain.push(
-      {
-        title: "Department Management",
-        url: "#",
-        icon: Building,
-        isActive: true,
-        items: [
-          {
-            title: "Users",
-            url: "#",
-          },
-          {
-            title: "Programmes",
-            url: "#",
-          },
-          {
-            title: "Batches",
-            url: "#",
-          },
-        ],
-      },
-      {
-        title: "Academics",
-        url: "#",
-        icon: GraduationCap,
-        items: [
-          {
-            title: "Degree Levels",
-            url: "#",
-          },
-          {
-            title: "Programme Management",
-            url: "#",
-          },
-          {
-            title: "Batch Management",
-            url: "#",
-          },
-        ],
-      }
-    );
+    baseData.navMain.push({
+      title: "Department Management",
+      url: "#",
+      icon: Building,
+      isActive: true,
+      items: [
+        {
+          title: "Programmes",
+          url: "/dashboard/programmes",
+        },
+        {
+          title: "Batches",
+          url: "/dashboard/batches",
+        },
+        {
+          title: "Faculty",
+          url: "/dashboard/faculties",
+        },
+      ],
+    });
   }
 
   // Staff-specific navigation
   if (profile.user_type === "STAFF") {
     baseData.navMain.push({
-      title: "Student Management",
+      title: "Academic Management",
       url: "#",
-      icon: Users,
+      icon: GraduationCap,
       isActive: true,
       items: [
         {
-          title: "Students",
-          url: "#",
+          title: "Programmes",
+          url: "/dashboard/programmes",
         },
         {
           title: "Batches",
-          url: "#",
+          url: "/dashboard/batches",
         },
       ],
     });
@@ -168,12 +130,12 @@ function getUserData(profile: UserProfile | null) {
       isActive: true,
       items: [
         {
-          title: "Students",
-          url: "#",
+          title: "Programmes",
+          url: "/dashboard/programmes",
         },
         {
-          title: "Programmes",
-          url: "#",
+          title: "Batches",
+          url: "/dashboard/batches",
         },
       ],
     });
@@ -182,40 +144,30 @@ function getUserData(profile: UserProfile | null) {
   // Student-specific navigation
   if (profile.user_type === "STUDENT") {
     baseData.navMain.push({
-      title: "My Profile",
+      title: "Academics",
       url: "#",
       icon: UserCheck,
       isActive: true,
       items: [
         {
-          title: "Profile",
-          url: "#",
+          title: "Programmes",
+          url: "/dashboard/programmes",
         },
         {
-          title: "Academic Info",
-          url: "#",
+          title: "Batches",
+          url: "/dashboard/batches",
         },
       ],
     });
   }
 
-  // Common secondary navigation for all authenticated users
-  baseData.navSecondary = [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ];
-
   return baseData;
 }
 
+/**
+ * App sidebar component with role-based navigation
+ * Displays different navigation items based on user role
+ */
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
@@ -236,7 +188,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <a href="/dashboard">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Command className="size-4" />
                 </div>
@@ -255,8 +207,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

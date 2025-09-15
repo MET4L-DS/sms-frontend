@@ -1,70 +1,12 @@
-# SMS - Student Monitoring System - Installation Guide
+# SMS API - Simplified Endpoints
 
-## Setup Instructions
+## 🌐 API Base URL: `http://localhost/sms/api/`
 
-### 1. Copy Files to XAMPP
+## Authentication & Profile Management (FOR EVERY USER SELF DETAILS)
 
-Copy the entire `sms` folder to your XAMPP htdocs directory:
+### POST /auth/login
 
-```
-C:\xampp\htdocs\sms\
-```
-
-### 2. Directory Structure in htdocs
-
-After copying, your structure should be:
-
-```
-C:\xampp\htdocs\sms\
-├── index.html (React frontend will go here)
-├── README.md
-├── .gitignore
-├── api/
-│   ├── index.php (Main API entry point)
-│   ├── config/
-│   │   └── Database.php
-│   ├── controllers/
-│   │   ├── AuthController.php
-│   │   ├── DepartmentController.php
-│   │   ├── UserController.php
-│   │   ├── ProgrammeController.php
-│   │   └── BatchController.php
-│   ├── middleware/
-│   │   └── AuthMiddleware.php
-│   ├── services/
-│   │   └── JWTService.php
-│   └── utils/
-│       ├── Response.php
-│       └── Security.php
-└── docs/
-    ├── schema.sql
-    ├── description.txt
-    └── postman.json
-```
-
-### 3. Database Setup
-
-1. Start XAMPP (Apache + MySQL)
-2. Open phpMyAdmin: `http://localhost/phpmyadmin`
-3. Run the SQL from `docs/schema.sql` to create database and tables
-4. Verify test users are created# SMS - Student Monitoring System
-
-### 4. Security Features
-
-- JWT authentication with custom implementation
-- bcrypt password hashing
-- Rate limiting (60 requests per minute per IP)
-- Input validation and sanitization
-- CORS configured for React frontend
-- Security headers (XSS protection, content sniffing prevention)
-- Request logging
-
-### 5. API Endpoints
-
-#### 🌐 API Base URL: `http://localhost/sms/api/`
-
-#### POST /auth/login
-
+**Description:** User login  
 **Request:**
 
 ```json
@@ -82,9 +24,10 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-#### GET /auth/me
+### GET /auth/me
 
-**Headers:** `Authorization: Bearer {token}`
+**Headers:** `Authorization: Bearer {token}` (any authenticated user)  
+**Description:** Get your own user details  
 **Response:**
 
 ```json
@@ -96,9 +39,10 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-#### PUT /auth/me
+### PUT /auth/me
 
-**Headers:** `Authorization: Bearer {token}`
+**Headers:** `Authorization: Bearer {token}` (any authenticated user)  
+**Description:** Update your own profile  
 **Request (all fields optional):**
 
 ```json
@@ -118,11 +62,14 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-### Department Management (Admin Only)
+---
 
-#### GET /departments
+## Department Management (ADMIN ONLY for CUD, ANY authenticated for READ)
 
-**Headers:** `Authorization: Bearer {token}` (any authenticated user)
+### GET /departments
+
+**Headers:** `Authorization: Bearer {token}` (any authenticated user)  
+**Description:** Get all departments  
 **Response:**
 
 ```json
@@ -137,9 +84,10 @@ C:\xampp\htdocs\sms\
 ]
 ```
 
-#### GET /departments/{id}
+### GET /departments/{id}
 
-**Headers:** `Authorization: Bearer {token}` (any authenticated user)
+**Headers:** `Authorization: Bearer {token}` (any authenticated user)  
+**Description:** Get specific department details  
 **Response:**
 
 ```json
@@ -152,9 +100,10 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-#### POST /departments
+### POST /departments
 
-**Headers:** `Authorization: Bearer {token}` (Admin only)
+**Headers:** `Authorization: Bearer {token}` (ADMIN only)  
+**Description:** Create new department  
 **Request:**
 
 ```json
@@ -170,16 +119,17 @@ C:\xampp\htdocs\sms\
 ```json
 {
   "message": "Department created successfully",
-  "department_id": 3,
+  "department_id": 2,
   "department_code": "EEE",
   "department_name": "Electrical and Electronic Engineering",
   "hod_email": "hod.eee@gmail.com"
 }
 ```
 
-#### PUT /departments/{id}
+### PUT /departments/{id}
 
-**Headers:** `Authorization: Bearer {token}` (Admin only)
+**Headers:** `Authorization: Bearer {token}` (ADMIN only)  
+**Description:** Update department  
 **Request (all fields optional):**
 
 ```json
@@ -198,9 +148,10 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-#### DELETE /departments/{id}
+### DELETE /departments/{id}
 
-**Headers:** `Authorization: Bearer {token}` (Admin only)
+**Headers:** `Authorization: Bearer {token}` (ADMIN only)  
+**Description:** Delete department  
 **Response:**
 
 ```json
@@ -209,221 +160,14 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-### User Management (HOD, Staff, Faculty Only)
+---
 
-#### GET /users
+## Degree Management (ADMIN ONLY for CUD, ANY authenticated for READ)
 
-**Headers:** `Authorization: Bearer {token}` (HOD, Staff, Faculty only)
-**Query Parameters:** `?type=STUDENT` (optional - filter by user type)
-**Valid types:** `STUDENT`, `FACULTY`, `STAFF`, `HOD`
+### GET /degrees
 
-**Response:**
-
-```json
-[
-  {
-    "user_id": 3,
-    "user_type": "FACULTY",
-    "full_name": "John Doe",
-    "email": "john.doe@gmail.com",
-    "is_active": true
-  }
-]
-```
-
-**Examples:**
-
-- `GET /users` - Get all users in department
-- `GET /users?type=STUDENT` - Get only students in department
-- `GET /users?type=FACULTY` - Get only faculty in department
-
-#### GET /users/{id}
-
-**Headers:** `Authorization: Bearer {token}` (HOD, Staff, Faculty only)
-**Response:**
-
-```json
-{
-  "user_id": 3,
-  "user_type": "FACULTY",
-  "full_name": "John Doe",
-  "email": "john.doe@gmail.com",
-  "is_active": true,
-  "department_id": 1,
-  "department_name": "Computer Science and Engineering",
-  "department_code": "CSE"
-}
-```
-
-#### POST /users/find
-
-**Headers:** `Authorization: Bearer {token}` (any authenticated user)
-**Request (provide at least one field):**
-
-```json
-{
-  "roll_number": "CSE2020001",
-  "email": "student@gmail.com"
-}
-```
-
-**Response:**
-
-```json
-{
-  "user_id": 5,
-  "user_type": "STUDENT",
-  "full_name": "John Student",
-  "email": "student@gmail.com",
-  "roll_number": "CSE2020001",
-  "department_code": "CSE",
-  "department_name": "Computer Science and Engineering"
-}
-```
-
-**Search Options:**
-
-- Search by `roll_number` only (for students)
-- Search by `email` only (for any user type)
-- Search by both `roll_number` and `email` (exact match)
-
-#### POST /users
-
-**Headers:** `Authorization: Bearer {token}` (HOD only)
-**Request:**
-
-```json
-{
-  "user_type": "FACULTY",
-  "email": "new.faculty@gmail.com"
-}
-```
-
-#### POST /users/bulk
-
-**Headers:** `Authorization: Bearer {token}` (HOD only)
-**Request:**
-
-```json
-{
-  "users": [
-    { "user_type": "STUDENT", "email": "student1@gmail.com" },
-    { "user_type": "FACULTY", "email": "faculty1@gmail.com" }
-  ]
-}
-```
-
-#### PUT /users/{id}
-
-**Headers:** `Authorization: Bearer {token}` (HOD can update anyone, STAFF can update students only)
-**Request (all fields optional):**
-
-```json
-{
-  "full_name": "Updated Name",
-  "email": "updated@email.com",
-  "user_type": "STAFF",
-  "is_active": true,
-  "reset_password": true
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "User updated successfully. Password has been reset to user email."
-}
-```
-
-**Permissions:**
-
-- **HOD**: Can update any user in their department (including faculty details and user types)
-- **STAFF**: Can only update student details in their department
-- **Password Reset**: Set `"reset_password": true` to reset password to user's email address
-
-#### DELETE /users/{id}
-
-**Headers:** `Authorization: Bearer {token}` (HOD only)
-
-#### PUT /users/activate
-
-**Headers:** `Authorization: Bearer {token}` (HOD only)
-**Description:** Bulk activate multiple users
-**Request:**
-
-```json
-{
-  "user_ids": [5, 6, 7]
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Successfully activated 2 users",
-  "activated_count": 2,
-  "total_requested": 3,
-  "errors": ["User ID 7 is already active"]
-}
-```
-
-#### PUT /users/deactivate
-
-**Headers:** `Authorization: Bearer {token}` (HOD only)
-**Description:** Bulk deactivate multiple users
-**Request:**
-
-```json
-{
-  "user_ids": [5, 6, 7]
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Successfully deactivated 3 users",
-  "deactivated_count": 3,
-  "total_requested": 3
-}
-```
-
-#### PUT /users/{id}/activate
-
-**Headers:** `Authorization: Bearer {token}` (HOD only)
-**Description:** Activate a single user
-**Response:**
-
-```json
-{
-  "message": "User activated successfully",
-  "user_id": 5,
-  "email": "user@gmail.com"
-}
-```
-
-#### PUT /users/{id}/deactivate
-
-**Headers:** `Authorization: Bearer {token}` (HOD only)
-**Description:** Deactivate a single user
-**Response:**
-
-```json
-{
-  "message": "User deactivated successfully",
-  "user_id": 5,
-  "email": "user@gmail.com"
-}
-```
-
-### Degree Management
-
-#### GET /degrees
-
-**Headers:** `Authorization: Bearer {token}` (any authenticated user)
+**Headers:** `Authorization: Bearer {token}` (any authenticated user)  
+**Description:** Get all degree levels  
 **Response:**
 
 ```json
@@ -439,9 +183,10 @@ C:\xampp\htdocs\sms\
 ]
 ```
 
-#### GET /degrees/{id}
+### GET /degrees/{id}
 
-**Headers:** `Authorization: Bearer {token}` (any authenticated user)
+**Headers:** `Authorization: Bearer {token}` (any authenticated user)  
+**Description:** Get specific degree level  
 **Response:**
 
 ```json
@@ -451,9 +196,10 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-#### POST /degrees
+### POST /degrees
 
-**Headers:** `Authorization: Bearer {token}` (HOD only)
+**Headers:** `Authorization: Bearer {token}` (ADMIN only)  
+**Description:** Create new degree level  
 **Request:**
 
 ```json
@@ -472,9 +218,10 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-#### PUT /degrees/{id}
+### PUT /degrees/{id}
 
-**Headers:** `Authorization: Bearer {token}` (HOD only)
+**Headers:** `Authorization: Bearer {token}` (ADMIN only)  
+**Description:** Update degree level  
 **Request:**
 
 ```json
@@ -483,15 +230,98 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-#### DELETE /degrees/{id}
+**Response:**
 
-**Headers:** `Authorization: Bearer {token}` (HOD only)
+```json
+{
+  "message": "Degree level updated successfully"
+}
+```
 
-### Programme Management (Department-Specific)
+### DELETE /degrees/{id}
 
-#### GET /programmes
+**Headers:** `Authorization: Bearer {token}` (ADMIN only)  
+**Description:** Delete degree level  
+**Response:**
 
-**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)
+```json
+{
+  "message": "Degree level deleted successfully"
+}
+```
+
+---
+
+## User Management (ADMIN for HOD management)
+
+### GET /users?type=HOD
+
+**Headers:** `Authorization: Bearer {token}` (ADMIN to view all, others for their department)  
+**Description:** Get HOD users (Admin requirement)  
+**Response:**
+
+```json
+[
+  {
+    "user_id": 2,
+    "user_type": "HOD",
+    "full_name": "CSE HOD",
+    "email": "hod.cse@gmail.com",
+    "is_active": true,
+    "department_name": "Computer Science and Engineering",
+    "department_code": "CSE"
+  }
+]
+```
+
+**Query Parameters:**
+
+- `?type=HOD` - Filter by user type (STUDENT, FACULTY, STAFF, HOD, ADMIN)
+
+### GET /users/{id}
+
+**Headers:** `Authorization: Bearer {token}` (ADMIN to view any user, others for their department)  
+**Description:** Get specific user details  
+**Response:**
+
+```json
+{
+  "user_id": 2,
+  "user_type": "HOD",
+  "full_name": "CSE HOD",
+  "email": "hod.cse@gmail.com",
+  "is_active": true,
+  "department_id": 1,
+  "department_name": "Computer Science and Engineering",
+  "department_code": "CSE"
+}
+```
+
+### DELETE /users/{id}
+
+**Headers:** `Authorization: Bearer {token}` (ADMIN to delete any user especially HOD, HOD to delete department users)  
+**Description:** Delete user  
+**Response:**
+
+```json
+{
+  "message": "User deleted successfully",
+  "deleted_user": {
+    "user_type": "HOD",
+    "full_name": "CSE HOD",
+    "email": "hod.cse@gmail.com"
+  }
+}
+```
+
+---
+
+## Programme Management (Department-Specific)
+
+### GET /programmes
+
+**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)  
+**Description:** Get all programmes in your department  
 **Response:**
 
 ```json
@@ -509,13 +339,29 @@ C:\xampp\htdocs\sms\
 ]
 ```
 
-#### GET /programmes/{id}
+### GET /programmes/{id}
 
-**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)
+**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)  
+**Description:** Get specific programme details from your department  
+**Response:**
 
-#### POST /programmes
+```json
+{
+  "programme_id": 1,
+  "programme_name": "BSc Computer Science",
+  "minimum_duration_years": 4,
+  "maximum_duration_years": 6,
+  "is_active": true,
+  "degree_level": "Undergraduate",
+  "department_code": "CSE",
+  "department_name": "Computer Science and Engineering"
+}
+```
 
-**Headers:** `Authorization: Bearer {token}` (HOD only)
+### POST /programmes
+
+**Headers:** `Authorization: Bearer {token}` (HOD only)  
+**Description:** Create a new programme in your department  
 **Request:**
 
 ```json
@@ -527,26 +373,60 @@ C:\xampp\htdocs\sms\
 }
 ```
 
-#### PUT /programmes/{id}
-
-**Headers:** `Authorization: Bearer {token}` (HOD only)
-**Request:**
+**Response:**
 
 ```json
 {
+  "message": "Programme created successfully",
+  "programme_id": 4,
+  "programme_name": "PhD Computer Science",
+  "degree_level": "Doctorate"
+}
+```
+
+### PUT /programmes/{id}
+
+**Headers:** `Authorization: Bearer {token}` (HOD only)  
+**Description:** Update programme in your department  
+**Request (all fields optional):**
+
+```json
+{
+  "programme_name": "Updated Programme Name",
+  "minimum_duration_years": 3,
+  "maximum_duration_years": 5,
   "is_active": false
 }
 ```
 
-#### DELETE /programmes/{id}
+**Response:**
 
-**Headers:** `Authorization: Bearer {token}` (HOD only)
+```json
+{
+  "message": "Programme updated successfully"
+}
+```
 
-### Batch Management (Department-Specific)
+### DELETE /programmes/{id}
 
-#### GET /batches
+**Headers:** `Authorization: Bearer {token}` (HOD only)  
+**Description:** Delete programme from your department  
+**Response:**
 
-**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)
+```json
+{
+  "message": "Programme deleted successfully"
+}
+```
+
+---
+
+## Batch Management (Department-Specific)
+
+### GET /batches
+
+**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)  
+**Description:** Get all batches in your department  
 **Response:**
 
 ```json
@@ -565,40 +445,209 @@ C:\xampp\htdocs\sms\
 ]
 ```
 
-#### GET /batches/{id}
+### GET /batches/{id}
 
-**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)
+**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)  
+**Description:** Get specific batch details from your department  
+**Response:**
 
-#### POST /batches
+```json
+{
+  "batch_id": 1,
+  "batch_name": "2024 Autumn Batch",
+  "start_year": 2024,
+  "start_semester": "AUTUMN",
+  "is_active": true,
+  "programme_name": "BSc Computer Science",
+  "programme_id": 1,
+  "department_code": "CSE",
+  "department_name": "Computer Science and Engineering"
+}
+```
 
-**Headers:** `Authorization: Bearer {token}` (HOD, Staff only)
+### POST /batches
+
+**Headers:** `Authorization: Bearer {token}` (HOD or STAFF only)  
+**Description:** Create a new batch in your department  
 **Request:**
 
 ```json
 {
   "programme_id": 1,
-  "batch_name": "2024 Autumn Batch",
-  "start_year": 2024,
-  "start_semester": "AUTUMN"
+  "batch_name": "2025 Spring Batch",
+  "start_year": 2025,
+  "start_semester": "SPRING"
 }
 ```
 
-#### PUT /batches/{id}
-
-**Headers:** `Authorization: Bearer {token}` (HOD, Staff only)
-**Request:**
+**Response:**
 
 ```json
 {
+  "message": "Batch created successfully",
+  "batch_id": 3,
+  "batch_name": "2025 Spring Batch",
+  "programme_name": "BSc Computer Science"
+}
+```
+
+### PUT /batches/{id}
+
+**Headers:** `Authorization: Bearer {token}` (HOD or STAFF only)  
+**Description:** Update batch in your department  
+**Request (all fields optional):**
+
+```json
+{
+  "batch_name": "Updated Batch Name",
+  "start_year": 2025,
+  "start_semester": "SPRING",
   "is_active": false
 }
 ```
 
-#### DELETE /batches/{id}
+**Response:**
 
-**Headers:** `Authorization: Bearer {token}` (HOD only)
+```json
+{
+  "message": "Batch updated successfully"
+}
+```
 
-### Test Users (from schema.sql)
+### DELETE /batches/{id}
+
+**Headers:** `Authorization: Bearer {token}` (HOD only)  
+**Description:** Delete batch from your department  
+**Response:**
+
+```json
+{
+  "message": "Batch deleted successfully"
+}
+```
+
+---
+
+## Faculty Management (Department-Specific)
+
+### GET /faculties
+
+**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)  
+**Description:** Get all faculty members in your department  
+**Response:**
+
+```json
+[
+  {
+    "user_id": 3,
+    "full_name": "Dr. John Faculty",
+    "email": "john.faculty@gmail.com",
+    "is_active": true,
+    "phone_number": "+1234567890",
+    "specialization": "Machine Learning",
+    "department_code": "CSE",
+    "department_name": "Computer Science and Engineering"
+  }
+]
+```
+
+### GET /faculties/{id}
+
+**Headers:** `Authorization: Bearer {token}` (any authenticated user from department)  
+**Description:** Get specific faculty details from your department  
+**Response:**
+
+```json
+{
+  "user_id": 3,
+  "user_type": "FACULTY",
+  "full_name": "Dr. John Faculty",
+  "email": "john.faculty@gmail.com",
+  "is_active": true,
+  "phone_number": "+1234567890",
+  "specialization": "Machine Learning",
+  "department_code": "CSE",
+  "department_name": "Computer Science and Engineering"
+}
+```
+
+### POST /faculties
+
+**Headers:** `Authorization: Bearer {token}` (HOD only)  
+**Description:** Create a new faculty member in your department  
+**Request:**
+
+```json
+{
+  "email": "new.faculty@gmail.com"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "Faculty created successfully. Password set to email address.",
+  "user_id": 8,
+  "user_type": "FACULTY",
+  "email": "new.faculty@gmail.com",
+  "department_id": 1
+}
+```
+
+### PUT /faculties/{id}
+
+**Headers:** `Authorization: Bearer {token}` (HOD for all faculty, Faculty for own profile)  
+**Description:** Update faculty information
+
+**HOD Request (can update any faculty field):**
+
+```json
+{
+  "full_name": "Dr. Updated Faculty Name",
+  "email": "updated.faculty@gmail.com",
+  "phone_number": "+9876543210",
+  "specialization": "Artificial Intelligence",
+  "is_active": true
+}
+```
+
+**Faculty Self-Update Request (phone_number and specialization only):**
+
+```json
+{
+  "phone_number": "+9876543210",
+  "specialization": "Deep Learning"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "Faculty updated successfully"
+}
+```
+
+### DELETE /faculties/{id}
+
+**Headers:** `Authorization: Bearer {token}` (HOD only)  
+**Description:** Delete faculty from your department  
+**Response:**
+
+```json
+{
+  "message": "Faculty deleted successfully",
+  "deleted_faculty": {
+    "full_name": "Dr. John Faculty",
+    "email": "john.faculty@gmail.com"
+  }
+}
+```
+
+---
+
+## Test Users (from schema.sql)
 
 - **Admin:** admin@gmail.com / adminpass (No department)
 - **HOD:** hod.cse@gmail.com / adminpass (CSE Department)
@@ -606,10 +655,55 @@ C:\xampp\htdocs\sms\
 - **Staff:** staff.cse@gmail.com / adminpass (CSE Department)
 - **Student:** student.cse@gmail.com / adminpass (CSE Department)
 
-### Architecture
+---
 
-- **Modular Design:** Separate controllers, middleware, services, and utilities
-- **Security First:** Input validation, rate limiting, proper error handling
-- **Database:** Singleton pattern with prepared statements
-- **JWT:** Custom implementation without external dependencies
-- **SOLID Principles:** Single responsibility, dependency injection ready
+## Permission Matrix
+
+| Endpoint                  | ADMIN  | HOD     | FACULTY | STAFF   | STUDENT |
+| ------------------------- | ------ | ------- | ------- | ------- | ------- |
+| **Auth Endpoints**        | ✅     | ✅      | ✅      | ✅      | ✅      |
+| POST /auth/login          | ✅     | ✅      | ✅      | ✅      | ✅      |
+| GET /auth/me              | ✅     | ✅      | ✅      | ✅      | ✅      |
+| PUT /auth/me              | ✅     | ✅      | ✅      | ✅      | ✅      |
+| **Department Management** |
+| GET /departments          | ✅     | ✅      | ✅      | ✅      | ✅      |
+| GET /departments/{id}     | ✅     | ✅      | ✅      | ✅      | ✅      |
+| POST /departments         | ✅     | ❌      | ❌      | ❌      | ❌      |
+| PUT /departments/{id}     | ✅     | ❌      | ❌      | ❌      | ❌      |
+| DELETE /departments/{id}  | ✅     | ❌      | ❌      | ❌      | ❌      |
+| **Degree Management**     |
+| GET /degrees              | ✅     | ✅      | ✅      | ✅      | ✅      |
+| GET /degrees/{id}         | ✅     | ✅      | ✅      | ✅      | ✅      |
+| POST /degrees             | ✅     | ❌      | ❌      | ❌      | ❌      |
+| PUT /degrees/{id}         | ✅     | ❌      | ❌      | ❌      | ❌      |
+| DELETE /degrees/{id}      | ✅     | ❌      | ❌      | ❌      | ❌      |
+| **User Management**       |
+| GET /users?type=HOD       | ✅ All | ✅ Dept | ✅ Dept | ✅ Dept | ❌      |
+| GET /users/{id}           | ✅ Any | ✅ Dept | ✅ Dept | ✅ Dept | ❌      |
+| DELETE /users/{id}        | ✅ Any | ✅ Dept | ❌      | ❌      | ❌      |
+| **Programme Management**  |
+| GET /programmes           | ❌     | ✅ Dept | ✅ Dept | ✅ Dept | ✅ Dept |
+| GET /programmes/{id}      | ❌     | ✅ Dept | ✅ Dept | ✅ Dept | ✅ Dept |
+| POST /programmes          | ❌     | ✅ Dept | ❌      | ❌      | ❌      |
+| PUT /programmes/{id}      | ❌     | ✅ Dept | ❌      | ❌      | ❌      |
+| DELETE /programmes/{id}   | ❌     | ✅ Dept | ❌      | ❌      | ❌      |
+| **Batch Management**      |
+| GET /batches              | ❌     | ✅ Dept | ✅ Dept | ✅ Dept | ✅ Dept |
+| GET /batches/{id}         | ❌     | ✅ Dept | ✅ Dept | ✅ Dept | ✅ Dept |
+| POST /batches             | ❌     | ✅ Dept | ❌      | ✅ Dept | ❌      |
+| PUT /batches/{id}         | ❌     | ✅ Dept | ❌      | ✅ Dept | ❌      |
+| DELETE /batches/{id}      | ❌     | ✅ Dept | ❌      | ❌      | ❌      |
+| **Faculty Management**    |
+| GET /faculties            | ❌     | ✅ Dept | ✅ Dept | ✅ Dept | ✅ Dept |
+| GET /faculties/{id}       | ❌     | ✅ Dept | ✅ Dept | ✅ Dept | ✅ Dept |
+| POST /faculties           | ❌     | ✅ Dept | ❌      | ❌      | ❌      |
+| PUT /faculties/{id}       | ❌     | ✅ Dept | ✅ Self | ❌      | ❌      |
+| DELETE /faculties/{id}    | ❌     | ✅ Dept | ❌      | ❌      | ❌      |
+
+**Notes:**
+
+- ✅ All = Can access all records
+- ✅ Dept = Can access records from their department only
+- ✅ Any = Can access any single record
+- ✅ Self = Can only update their own profile (limited fields)
+- ❌ = No access
